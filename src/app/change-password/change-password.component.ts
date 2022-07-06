@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, shareReplay, startWith, takeUntil } from 'rxjs/operators';
 import { IChangePasswordQuery } from '../models/change-password.model';
+import { AlertService } from '../services/alert.service';
 import { ChangePasswordService } from '../services/change-password.service';
 
 interface PasswordStability {
@@ -50,6 +51,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 
   constructor(
     private changePasswordService: ChangePasswordService,
+    private alertService: AlertService,
     private router: Router,
     private route: ActivatedRoute,
   ) { }
@@ -87,9 +89,11 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
       takeUntil(this.alive$),
     ).subscribe({
       next: () => {
+        this.alertService.showSuccessMsg('Password succesfully changed');
         this.router.navigateByUrl('');
       },
       error: () => {
+        this.alertService.showSuccessMsg('Oops, something went wrong');
         this.formGroup.enable();
         this.loading$.next(false);
       }
