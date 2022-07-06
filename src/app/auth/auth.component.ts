@@ -45,6 +45,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   login() {
     const model: IAuthQuery = this.formGroup.value;
     this.loading$.next(true);
+    this.formGroup.disable();
     this.authService.login(model).pipe(
       takeUntil(this.alive$),
     ).subscribe({
@@ -53,6 +54,7 @@ export class AuthComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.alertService.showWarning('Oops, something went wrong');
+        this.formGroup.enable();
         this.loading$.next(false);
       },
     });
