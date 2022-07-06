@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Route, Router } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { IAuthQuery } from '../models/auth.model';
+import { AlertService } from '../services/alert.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -26,7 +27,8 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {}
@@ -50,7 +52,7 @@ export class AuthComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('');
       },
       error: () => {
-        this.formGroup.setErrors({unauthorized: true});
+        this.alertService.showWarning('Oops, something went wrong');
         this.loading$.next(false);
       },
     });
