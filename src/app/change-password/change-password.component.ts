@@ -21,8 +21,8 @@ interface PasswordStability {
 })
 export class ChangePasswordComponent implements OnInit, OnDestroy {
 
-  private passwordControl = new FormControl(null, [Validators.required, this.matchValidator()]);
-  private confirmControl = new FormControl(null);
+  private passwordControl = new FormControl(null, [Validators.required]);
+  private confirmControl = new FormControl(null, [this.matchValidator()]);
 
   public formGroup = new FormGroup({
     password: this.passwordControl,
@@ -43,7 +43,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     return this.passwordControl.hasError('required');
   }
   get showMatchError(): boolean {
-    return this.passwordControl.hasError('notMatch') && !this.showRequiredError;
+    return this.confirmControl.hasError('notMatch') && !this.showRequiredError;
   }
 
   private token: string | null = null;
@@ -61,9 +61,9 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     if (!this.token) {
       this.router.navigateByUrl('/');
     }
-    this.confirmControl.valueChanges.pipe(
+    this.passwordControl.valueChanges.pipe(
       takeUntil(this.alive$),
-    ).subscribe(() => this.passwordControl.updateValueAndValidity());
+    ).subscribe(() => this.confirmControl.updateValueAndValidity());
   }
 
   ngOnDestroy(): void {
@@ -102,8 +102,8 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
 
   private matchValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const password: string = control.value || '';
-      const confirmation: string = this.confirmControl?.value || '';
+      const confirmation: string = control.value || '';
+      const password: string = this.passwordControl?.value || '';
       const isMatch = password === confirmation;
       return isMatch ? null : {notMatch: true};
     };
