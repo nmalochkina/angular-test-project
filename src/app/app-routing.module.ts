@@ -14,6 +14,10 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then(m => m.HomeModule),
     canActivate: [AuthGuard],
   },
+  { 
+    path: 'change-password',
+    loadChildren: () => import('./change-password/change-password.module').then(m => m.ChangePasswordModule)
+  },
   {
     path: '**',
     redirectTo: '',
